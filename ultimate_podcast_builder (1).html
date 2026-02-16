@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Podcast Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .section:last-of-type {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            color: #764ba2;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-number {
+            background: #667eea;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 1.2em;
+        }
+        
+        .question {
+            margin-bottom: 25px;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            font-size: 1.1em;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+        
+        .option input[type="radio"],
+        .option input[type="checkbox"] {
+            margin-right: 12px;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
+        
+        .option input[type="radio"]:checked,
+        .option input[type="checkbox"]:checked {
+            accent-color: #667eea;
+        }
+        
+        .option label {
+            cursor: pointer;
+            flex: 1;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+        
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .slider-container {
+            padding: 10px 0;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .slider-value {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 40px;
+        }
+        
+        button {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .reset-btn {
+            background: #f0f0f0;
+            color: #666;
+        }
+        
+        .reset-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        .results {
+            display: none;
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .results h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .results-content {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            max-height: 500px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            margin-top: 15px;
+            margin-right: 10px;
+        }
+        
+        .copy-btn:hover {
+            background: #218838;
+        }
+        
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px;
+            margin-top: 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            color: #856404;
+        }
+        
+        .info-note {
+            background: #d1ecf1;
+            border-left: 4px solid #0c5460;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 4px;
+            color: #0c5460;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ultimate Podcast Builder</h1>
+        <p class="subtitle">Design your perfect AI-generated podcast by answering these questions</p>
+        
+        <form id="podcastQuiz">
+            <!-- SECTION 1: SET THE VIBE -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">1</span>
+                    Set the Vibe
+                </h2>
+                
+                <div class="question">
+                    <div class="question-text">What energy level do you want?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="energy1" name="energy" value="High-energy and enthusiastic">
+                            <label for="energy1">High-energy and enthusiastic</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="energy2" name="energy" value="Calm and measured">
+                            <label for="energy2">Calm and measured</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="energy3" name="energy" value="Intense and serious">
+                            <label for="energy3">Intense and serious</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="energy4" name="energy" value="Balanced mix">
+                            <label for="energy4">Balanced mix</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">What humor style appeals to you?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="humor1" name="humor" value="Sarcastic and witty">
+                            <label for="humor1">Sarcastic and witty</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="humor2" name="humor" value="Self-deprecating">
+                            <label for="humor2">Self-deprecating</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="humor3" name="humor" value="Punny and playful">
+                            <label for="humor3">Punny and playful</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="humor4" name="humor" value="Dry and understated">
+                            <label for="humor4">Dry and understated</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="humor5" name="humor" value="Minimal humor - keep it professional">
+                            <label for="humor5">Minimal humor - keep it professional</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">How formal should the tone be?</div>
+                    <div class="slider-container">
+                        <input type="range" min="1" max="5" value="3" class="slider" id="formality">
+                        <div class="slider-labels">
+                            <span>Academic/Professional</span>
+                            <span>Conversational</span>
+                            <span>Like Friends Chatting</span>
+                        </div>
+                        <div class="slider-value" id="formalityValue">Conversational</div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">What pace works best for you?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="pace1" name="pace" value="Fast-talking, dense information">
+                            <label for="pace1">Fast-talking, dense information</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="pace2" name="pace" value="Moderate pace">
+                            <label for="pace2">Moderate pace</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="pace3" name="pace" value="Slow and reflective">
+                            <label for="pace3">Slow and reflective</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECTION 2: WHO'S TALKING -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">2</span>
+                    Who's Talking?
+                </h2>
+                
+                <div class="question">
+                    <div class="question-text">How many hosts?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="hosts1" name="hosts" value="Solo host">
+                            <label for="hosts1">Solo host</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="hosts2" name="hosts" value="Duo (2 hosts)">
+                            <label for="hosts2">Duo (2 hosts)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="hosts3" name="hosts" value="Panel (3+ hosts)">
+                            <label for="hosts3">Panel (3+ hosts)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">What's the dynamic between hosts?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="dynamic1" name="dynamic" value="Co-equal friends/colleagues">
+                            <label for="dynamic1">Co-equal friends/colleagues</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="dynamic2" name="dynamic" value="Expert + curious learner">
+                            <label for="dynamic2">Expert + curious learner</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="dynamic3" name="dynamic" value="Interview style">
+                            <label for="dynamic3">Interview style</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="dynamic4" name="dynamic" value="Debate/opposing views">
+                            <label for="dynamic4">Debate/opposing views</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="dynamic5" name="dynamic" value="N/A - Solo host">
+                            <label for="dynamic5">N/A - Solo host</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Gender composition?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="gender1" name="gender" value="All male">
+                            <label for="gender1">All male</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="gender2" name="gender" value="All female">
+                            <label for="gender2">All female</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="gender3" name="gender" value="Mixed">
+                            <label for="gender3">Mixed</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="gender4" name="gender" value="No preference">
+                            <label for="gender4">No preference</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Age/generation vibe?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="age1" name="age" value="Gen Z">
+                            <label for="age1">Gen Z</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="age2" name="age" value="Millennial">
+                            <label for="age2">Millennial</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="age3" name="age" value="Gen X">
+                            <label for="age3">Gen X</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="age4" name="age" value="Ageless/professional">
+                            <label for="age4">Ageless/professional</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Accent preference?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="accent1" name="accent" value="American neutral">
+                            <label for="accent1">American neutral</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="accent2" name="accent" value="British">
+                            <label for="accent2">British</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="accent3" name="accent" value="Southern US">
+                            <label for="accent3">Southern US</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="accent4" name="accent" value="New York">
+                            <label for="accent4">New York</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="accent5" name="accent" value="No preference">
+                            <label for="accent5">No preference</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECTION 3: WHAT ARE WE TALKING ABOUT -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">3</span>
+                    What Are We Talking About?
+                </h2>
+                
+                <div class="question">
+                    <div class="question-text">Choose your content source:</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="contentType1" name="contentType" value="news" checked>
+                            <label for="contentType1">Current news headlines (pre-loaded topics)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="contentType2" name="contentType" value="slack">
+                            <label for="contentType2">Class Slack discussions (paste your own)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="contentType3" name="contentType" value="both">
+                            <label for="contentType3">Combination of news + Slack</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="newsTopicsSection">
+                    <div class="question">
+                        <div class="question-text">Select your topics of interest (choose all that apply):</div>
+                        <div class="note">Tip: Select multiple topics for a well-rounded podcast</div>
+                        <div class="checkbox-grid">
+                            <div class="option">
+                                <input type="checkbox" id="topic1" name="topics" value="Finance/Economics/Markets">
+                                <label for="topic1">Finance/Economics/Markets</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="topic2" name="topics" value="Tech/AI/Startups">
+                                <label for="topic2">Tech/AI/Startups</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="topic3" name="topics" value="Fashion/Beauty/Style">
+                                <label for="topic3">Fashion/Beauty/Style</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="topic4" name="topics" value="Health/Wellness/Fitness">
+                                <label for="topic4">Health/Wellness/Fitness</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="topic5" name="topics" value="Politics/Policy">
+                                <label for="topic5">Politics/Policy</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="topic6" name="topics" value="Pop Culture/Entertainment">
+                                <label for="topic6">Pop Culture/Entertainment</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="topic7" name="topics" value="Sports">
+                                <label for="topic7">Sports</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="topic8" name="topics" value="Career/Professional Development">
+                                <label for="topic8">Career/Professional Development</label>
+                            </div>
+                            <div class="option">
+                                <input type="checkbox" id="topic9" name="topics" value="Science/Environment">
+                                <label for="topic9">Science/Environment</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="question">
+                        <div class="question-text">Other topics not listed? (optional)</div>
+                        <input type="text" id="otherTopics" placeholder="e.g., Food & Dining, Travel, Gaming...">
+                    </div>
+                    
+                    <div class="question">
+                        <div class="question-text">Preferred news sources (optional)</div>
+                        <input type="text" id="sources" placeholder="e.g., WSJ, NYT, Vogue, TechCrunch, Bloomberg...">
+                    </div>
+                </div>
+                
+                <div id="slackContentSection" style="display: none;">
+                    <div class="question">
+                        <div class="question-text">Paste your class Slack discussions below:</div>
+                        <div class="note">Copy and paste recent messages from your class Slack channels. Include usernames, timestamps, and full message text. The more context you provide, the better the podcast will be.</div>
+                        <textarea id="slackContent" placeholder="Example:
+                        
+John Smith [2:34 PM]
+Does anyone know if we need to cite the guest speaker in our blog post?
+
+Sarah Johnson [2:36 PM]
+Yes! Prof said we need at least one class reference
+
+Mike Chen [2:40 PM]
+Also heads up - the career panel discussion was amazing. The startup vs. big company debate got heated lol
+
+Jane Doe [2:45 PM]
+@Mike totally agree. I'm now second-guessing my internship plans..." style="min-height: 200px;"></textarea>
+                    </div>
+                    
+                    <div class="question">
+                        <div class="question-text">What themes should the podcast focus on? (optional)</div>
+                        <input type="text" id="slackThemes" placeholder="e.g., career advice, assignment questions, guest speaker reactions, AI tools discussion...">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECTION 4: HOW DEEP ARE WE GOING -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">4</span>
+                    How Deep Are We Going?
+                </h2>
+                
+                <div class="question">
+                    <div class="question-text">Content depth?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="depth1" name="depth" value="Surface-level headlines only">
+                            <label for="depth1">Surface-level headlines only</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="depth2" name="depth" value="Moderate depth with analysis">
+                            <label for="depth2">Moderate depth with analysis</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="depth3" name="depth" value="Deep dives with expert context">
+                            <label for="depth3">Deep dives with expert context</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="depth4" name="depth" value="Mix depending on importance">
+                            <label for="depth4">Mix depending on importance</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Content style?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="style1" name="style" value="News summary (what happened)">
+                            <label for="style1">News summary (what happened)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="style2" name="style" value="Trend analysis (why it matters)">
+                            <label for="style2">Trend analysis (why it matters)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="style3" name="style" value="Debate/multiple perspectives">
+                            <label for="style3">Debate/multiple perspectives</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="style4" name="style" value="Actionable takeaways">
+                            <label for="style4">Actionable takeaways</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="style5" name="style" value="Storytelling/narrative">
+                            <label for="style5">Storytelling/narrative</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Episode length?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="length1" name="length" value="5 minutes (quick brief)">
+                            <label for="length1">5 minutes (quick brief)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="length2" name="length" value="10 minutes (commute length)">
+                            <label for="length2">10 minutes (commute length)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="length3" name="length" value="15 minutes (workout length)">
+                            <label for="length3">15 minutes (workout length)</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="length4" name="length" value="20+ minutes (deep dive)">
+                            <label for="length4">20+ minutes (deep dive)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Episode structure?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="structure1" name="structure" value="All topics blended together">
+                            <label for="structure1">All topics blended together</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="structure2" name="structure" value="Separate segments per topic">
+                            <label for="structure2">Separate segments per topic</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="structure3" name="structure" value="One main story + quick hits">
+                            <label for="structure3">One main story + quick hits</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Content timeframe?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="timeframe1" name="timeframe" value="Last 24 hours">
+                            <label for="timeframe1">Last 24 hours</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="timeframe2" name="timeframe" value="Last week">
+                            <label for="timeframe2">Last week</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="timeframe3" name="timeframe" value="Mix of recent and evergreen">
+                            <label for="timeframe3">Mix of recent and evergreen</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECTION 5: THE PERSPECTIVE -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">5</span>
+                    The Perspective
+                </h2>
+                
+                <div class="question">
+                    <div class="question-text">Political lean?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="politics1" name="politics" value="Progressive">
+                            <label for="politics1">Progressive</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="politics2" name="politics" value="Moderate">
+                            <label for="politics2">Moderate</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="politics3" name="politics" value="Conservative">
+                            <label for="politics3">Conservative</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="politics4" name="politics" value="Libertarian">
+                            <label for="politics4">Libertarian</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="politics5" name="politics" value="Explicitly non-political">
+                            <label for="politics5">Explicitly non-political</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Overall stance on tech/innovation?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="stance1" name="stance" value="Optimistic about future">
+                            <label for="stance1">Optimistic about future</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="stance2" name="stance" value="Skeptical/critical">
+                            <label for="stance2">Skeptical/critical</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="stance3" name="stance" value="Balanced/neutral">
+                            <label for="stance3">Balanced/neutral</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Host expertise level?</div>
+                    <div class="options">
+                        <div class="option">
+                            <input type="radio" id="expertise1" name="expertise" value="Industry insider with deep knowledge">
+                            <label for="expertise1">Industry insider with deep knowledge</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="expertise2" name="expertise" value="Informed enthusiast">
+                            <label for="expertise2">Informed enthusiast</label>
+                        </div>
+                        <div class="option">
+                            <input type="radio" id="expertise3" name="expertise" value="Explainer for beginners">
+                            <label for="expertise3">Explainer for beginners</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SECTION 6: EXTRAS -->
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="section-number">6</span>
+                    Extras & Special Features
+                </h2>
+                
+                <div class="question">
+                    <div class="question-text">Recurring segments/features?</div>
+                    <div class="checkbox-grid">
+                        <div class="option">
+                            <input type="checkbox" id="feature1" name="features" value="Weekly prediction">
+                            <label for="feature1">Weekly prediction</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="feature2" name="features" value="Hot take of the week">
+                            <label for="feature2">Hot take of the week</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="feature3" name="features" value="Thing I'm obsessed with">
+                            <label for="feature3">Thing I'm obsessed with</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="feature4" name="features" value="Myth busting">
+                            <label for="feature4">Myth busting</label>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" id="feature5" name="features" value="None - keep it straightforward">
+                            <label for="feature5">None - keep it straightforward</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="question">
+                    <div class="question-text">Any other notes or preferences?</div>
+                    <textarea id="additionalNotes" placeholder="Any specific requests, pet peeves, or things you want to emphasize..."></textarea>
+                </div>
+            </div>
+            
+            <div class="button-container">
+                <button type="submit" class="submit-btn">Generate Source Document</button>
+                <button type="reset" class="reset-btn">Reset All</button>
+            </div>
+        </form>
+        
+        <div class="results" id="results">
+            <h2>Your Podcast Source Document</h2>
+            <div class="results-content" id="resultsContent"></div>
+            <button class="copy-btn" onclick="copyResults()">Copy to Clipboard</button>
+            <button class="copy-btn" onclick="downloadResults()">Download as Text File</button>
+            <div class="info-note">
+                <strong>How to use this document:</strong><br>
+                For NotebookLM: Copy this entire document, paste into a new Google Doc, then upload that Google Doc to NotebookLM. Click "Generate" to create your audio podcast.<br><br>
+                For ElevenLabs or other tools: Use this as your briefing document to inform the tone, style, and content of your podcast generation.
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const headlines = {
+            "Finance/Economics/Markets": [
+                {
+                    title: "Fed Signals Potential Rate Cut in March as Inflation Continues to Cool",
+                    summary: "The Federal Reserve indicated a potential interest rate cut in March 2026 as inflation metrics continue to moderate. Consumer Price Index rose 2.3% year-over-year in January, below economist expectations of 2.5%. Fed Chair Jerome Powell's dovish comments at the FOMC meeting sparked a rally in equity markets, with the S&P 500 gaining 1.8% on the day. Treasury yields dropped to four-month lows, with the 10-year yield falling to 4.12%. Market analysts now project three quarter-point cuts by year-end, compared to previous expectations of one or two cuts."
+                },
+                {
+                    title: "Goldman Sachs Reports Record Q4 Earnings, Beats Expectations",
+                    summary: "Goldman Sachs Group Inc. reported record fourth-quarter earnings, significantly beating Wall Street expectations. Investment banking revenue surged 24% year-over-year to $2.7 billion, driven by robust M&A advisory and underwriting activity. The bank's fixed income and equities trading divisions also posted strong results. CEO David Solomon announced an expanded stock buyback program of $30 billion, citing confidence in the firm's capital position. The results reflect a broader recovery in dealmaking activity as companies gained confidence following the 2024 election cycle."
+                },
+                {
+                    title: "Bitcoin Hits New All-Time High Above $105,000",
+                    summary: "Bitcoin reached a new all-time high above $105,000, driven by continued institutional adoption and increased demand for spot Bitcoin ETFs. The cryptocurrency market capitalization exceeded $2 trillion, with Bitcoin representing approximately 55% of total market value. Spot Bitcoin ETFs saw record inflows of $2.1 billion in a single week, with major asset managers like BlackRock and Fidelity reporting strong institutional interest. Analysts attribute the surge to favorable regulatory developments and growing acceptance of cryptocurrencies in corporate treasury strategies."
+                }
+            ],
+            "Tech/AI/Startups": [
+                {
+                    title: "OpenAI Launches GPT-5 with Multimodal Reasoning Capabilities",
+                    summary: "OpenAI unveiled GPT-5, its most advanced language model to date, featuring significant improvements in multimodal reasoning capabilities. The new model can simultaneously process video, audio, images, and text with enhanced contextual understanding. Early benchmarks show substantial improvements in coding tasks, with GPT-5 solving 87% of LeetCode Hard problems compared to GPT-4's 68%. The model also demonstrates improved scientific reasoning and reduced hallucination rates. Enterprise pricing was announced at competitive rates, with API access starting at $0.03 per 1,000 tokens. OpenAI CEO Sam Altman stated that GPT-5 represents a major step toward artificial general intelligence."
+                },
+                {
+                    title: "Meta Unveils Quest 4 VR Headset with Eye-Tracking and Improved Resolution",
+                    summary: "Meta announced the Quest 4 virtual reality headset, featuring eye-tracking technology and 4K per-eye displays at a mainstream price point of $499. The device includes improved processor performance, wireless PC connectivity, and enhanced hand-tracking capabilities. Pre-orders exceeded first-generation Quest sales by 300%, indicating strong consumer interest in VR technology. Meta CEO Mark Zuckerberg emphasized the company's commitment to making VR accessible to broader audiences. The Quest 4 is positioned to compete directly with Apple's Vision Pro at a fraction of the price."
+                },
+                {
+                    title: "Nvidia Stock Splits 10-for-1 After Reaching $1,200 Per Share",
+                    summary: "Nvidia Corporation announced a 10-for-1 stock split after shares reached $1,200, making the stock more accessible to retail investors. The company continues to dominate the AI chip market, with data center revenue up 217% year-over-year to reach $47.5 billion. Demand for Nvidia's Blackwell architecture GPUs exceeds supply, with major cloud providers including Microsoft, Google, and Amazon expanding their AI infrastructure investments. CEO Jensen Huang stated that AI computing demand shows no signs of slowing, with the company's order backlog extending into late 2026."
+                },
+                {
+                    title: "Perplexity AI Raises $500M Series D at $9B Valuation",
+                    summary: "AI-powered search startup Perplexity AI raised $500 million in Series D funding at a $9 billion valuation, positioning itself as a serious challenger to Google's search dominance. The company's AI-native approach to search has attracted 100 million monthly active users, with particular strength in academic and research communities. The funding round was led by prominent venture capital firms and includes strategic investments from several Fortune 500 companies. Perplexity plans to expand into enterprise search solutions and develop additional AI-powered productivity tools."
+                }
+            ],
+            "Fashion/Beauty/Style": [
+                {
+                    title: "Paris Fashion Week: Balenciaga Returns to Haute Couture After 53-Year Hiatus",
+                    summary: "Balenciaga made a dramatic return to haute couture at Paris Fashion Week, presenting its first couture collection in 53 years. Creative Director Demna's collection received a standing ovation, featuring innovative construction techniques and sustainable materials. The collection marks a significant milestone in the brand's rebuilding efforts following controversies in 2022. Fashion critics praised the technical excellence and modern interpretation of traditional couture craftsmanship. The return to haute couture signals Balenciaga's commitment to reclaiming its position among luxury fashion houses."
+                },
+                {
+                    title: "Zara Launches AI-Powered Personal Styling Service in 12 Markets",
+                    summary: "Fast fashion giant Zara launched an AI-powered personal styling service across 12 major markets, using computer vision technology to analyze customers' existing wardrobes and suggest complementary pieces. The app allows users to photograph their clothes, which the AI then catalogs and uses to generate personalized outfit recommendations and shopping suggestions. Early beta testing showed a 40% increase in purchase conversion rates and higher customer satisfaction scores. The technology represents a significant investment in digital innovation by parent company Inditex, signaling the fast fashion industry's push toward personalized, technology-driven shopping experiences."
+                },
+                {
+                    title: "Estée Lauder Acquires K-Beauty Brand Sulwhasoo for $2.8 Billion",
+                    summary: "The Estée Lauder Companies completed its largest acquisition since 2016, purchasing Korean luxury beauty brand Sulwhasoo for $2.8 billion. The deal significantly expands Estée Lauder's presence in the Asian beauty market, particularly in South Korea, China, and Southeast Asia. Sulwhasoo will maintain independent operations while benefiting from Estée Lauder's global distribution network. The acquisition reflects the growing influence of K-beauty in the global luxury cosmetics market and Western brands' recognition of Asian beauty innovation leadership."
+                }
+            ],
+            "Health/Wellness/Fitness": [
+                {
+                    title: "FDA Approves First Over-the-Counter Continuous Glucose Monitor",
+                    summary: "The FDA approved the first over-the-counter continuous glucose monitor (CGM), allowing consumers to track blood sugar levels in real-time without a prescription. The device, priced at $99 for a two-week sensor, is expected to revolutionize metabolic health monitoring for non-diabetics. The approval opens new opportunities for health optimization, athletic performance monitoring, and preventive healthcare. Industry analysts project the consumer CGM market could reach $5 billion by 2028 as awareness of metabolic health grows among general consumers."
+                },
+                {
+                    title: "New Study Links Ultra-Processed Foods to Accelerated Brain Aging",
+                    summary: "A landmark Harvard study tracking 72,000 participants over 15 years found that high consumption of ultra-processed foods correlates with 28% higher risk of cognitive decline and accelerated brain aging. The research identified specific mechanisms by which additives, preservatives, and processing methods may impact neurological health. The findings have prompted calls for stricter food labeling regulations and renewed debate about the health implications of modern food production. Public health advocates are pushing for clearer definitions of ultra-processed foods and consumer education initiatives."
+                },
+                {
+                    title: "Peloton Partners with Medicare to Offer Subsidized Fitness Equipment",
+                    summary: "Peloton announced a partnership with Medicare to offer subsidized fitness equipment and subscriptions to eligible beneficiaries, marking a significant shift toward preventive healthcare coverage. The program targets seniors and could reach up to 15 million Medicare Advantage enrollees. Members will receive discounted Peloton bikes or treadmills plus included monthly subscriptions, with costs partially covered by their health plans. The initiative reflects growing recognition among insurers that preventive fitness investments can reduce long-term healthcare costs."
+                }
+            ],
+            "Sports": [
+                {
+                    title: "NFL Announces Expansion to 18-Game Regular Season Starting 2027",
+                    summary: "The National Football League announced an expansion to an 18-game regular season beginning in 2027, following approval from the players' union. The new format includes two additional bye weeks per team and expanded roster sizes to address player safety concerns. The preseason will be reduced to two games. The decision is projected to generate an additional $2 billion in annual revenue. Player compensation will increase proportionally, with enhanced healthcare benefits and expanded practice squad rosters."
+                },
+                {
+                    title: "Caitlin Clark Signs Largest Endorsement Deal in Women's Basketball History",
+                    summary: "WNBA star Caitlin Clark signed an eight-year, $28 million endorsement contract with Nike, representing the largest deal in women's basketball history. The agreement includes a signature shoe line launching in fall 2026. Clark's marketability extends beyond the court, with her social media following exceeding 15 million across platforms. The deal reflects growing investment in women's sports and recognition of female athletes' commercial value. Industry experts view this as a watershed moment for women's basketball endorsement opportunities."
+                },
+                {
+                    title: "Saudi Arabia Wins Bid to Host 2034 FIFA World Cup",
+                    summary: "FIFA awarded Saudi Arabia the hosting rights for the 2034 World Cup, despite human rights concerns raised by international organizations. The decision includes commitments to a $200 billion infrastructure investment program across multiple cities. The tournament will be held in winter months to avoid extreme summer temperatures, similar to the 2022 Qatar World Cup. The announcement has prompted debate about sports washing and the balance between economic development and human rights considerations in international sporting events."
+                }
+            ],
+            "Pop Culture/Entertainment": [
+                {
+                    title: "Beyoncé's 'Renaissance' Film Breaks Streaming Records",
+                    summary: "Beyoncé's concert documentary 'Renaissance' was viewed 47 million times in its opening weekend across streaming platforms, setting new records for music documentary viewership. The film's unique distribution model, which included simultaneous theatrical and streaming release, generated the highest single-day revenue for AMC Theatres since the pandemic. The success has prompted discussion about new distribution strategies for music content. Industry analysts view the release as a case study for artist-driven content distribution that bypasses traditional studio systems."
+                },
+                {
+                    title: "BookTok Drives Physical Book Sales to 20-Year High",
+                    summary: "Physical book sales reached their highest level in two decades, with industry analysts crediting TikTok's #BookTok community as the primary driver. Print book revenue increased 18% year-over-year, defying predictions of digital dominance. Independent bookstores experienced an unexpected renaissance, with many reporting their best years since the early 2000s. Publishers have struggled to maintain inventory levels for titles that trend on the platform, with some books selling out within hours of BookTok virality."
+                },
+                {
+                    title: "HBO's 'Harry Potter' Series Casts Unknown for Lead Role",
+                    summary: "HBO announced it has cast a 14-year-old British actor for the lead role in its highly anticipated Harry Potter series, selecting from over 32,000 auditions worldwide. The seven-season series adaptation will begin filming in June 2026, with J.K. Rowling serving as executive producer despite ongoing controversy. HBO has committed to a reported $1 billion budget for the first season alone. The casting decision reflects the network's strategy of discovering new talent rather than relying on established child actors."
+                }
+            ]
+        };
+        
+        // Update slider value display
+        const formalitySlider = document.getElementById('formality');
+        const formalityValue = document.getElementById('formalityValue');
+        const formalityLabels = ['Academic/Professional', 'Professional', 'Conversational', 'Casual', 'Like Friends Chatting'];
+        
+        formalitySlider.addEventListener('input', function() {
+            formalityValue.textContent = formalityLabels[this.value - 1];
+        });
+        
+        // Handle content type switching
+        const contentTypeRadios = document.querySelectorAll('input[name="contentType"]');
+        const newsSection = document.getElementById('newsTopicsSection');
+        const slackSection = document.getElementById('slackContentSection');
+        
+        contentTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'news') {
+                    newsSection.style.display = 'block';
+                    slackSection.style.display = 'none';
+                } else if (this.value === 'slack') {
+                    newsSection.style.display = 'none';
+                    slackSection.style.display = 'block';
+                } else if (this.value === 'both') {
+                    newsSection.style.display = 'block';
+                    slackSection.style.display = 'block';
+                }
+            });
+        });
+        
+        // Handle form submission
+        document.getElementById('podcastQuiz').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const contentType = formData.get('contentType');
+            const topics = formData.getAll('topics');
+            const slackContent = document.getElementById('slackContent').value;
+            
+            // Validation
+            if (contentType === 'news' && topics.length === 0) {
+                alert('Please select at least one topic!');
+                return;
+            }
+            
+            if ((contentType === 'slack' || contentType === 'both') && !slackContent.trim()) {
+                alert('Please paste some Slack content!');
+                return;
+            }
+            
+            // Generate source document
+            let output = `PODCAST BRIEFING DOCUMENT FOR AI GENERATION\n`;
+            output += `============================================\n`;
+            output += `Generated: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}\n\n`;
+            
+            output += `\nPODCAST PARAMETERS\n`;
+            output += `==================\n\n`;
+            
+            output += `HOST CONFIGURATION:\n`;
+            output += `- Number of hosts: ${formData.get('hosts') || 'Not specified'}\n`;
+            output += `- Dynamic: ${formData.get('dynamic') || 'Not specified'}\n`;
+            output += `- Gender composition: ${formData.get('gender') || 'Not specified'}\n`;
+            output += `- Age/Generation: ${formData.get('age') || 'Not specified'}\n`;
+            output += `- Accent: ${formData.get('accent') || 'Not specified'}\n\n`;
+            
+            output += `TONE & STYLE:\n`;
+            output += `- Energy level: ${formData.get('energy') || 'Not specified'}\n`;
+            output += `- Humor style: ${formData.get('humor') || 'Not specified'}\n`;
+            output += `- Formality: ${formalityLabels[formalitySlider.value - 1]}\n`;
+            output += `- Pace: ${formData.get('pace') || 'Not specified'}\n\n`;
+            
+            output += `CONTENT APPROACH:\n`;
+            output += `- Content source: ${contentType === 'news' ? 'Current news headlines' : contentType === 'slack' ? 'Class Slack discussions' : 'News headlines + Slack discussions'}\n`;
+            
+            if (contentType === 'news' || contentType === 'both') {
+                output += `- Topics covered: ${topics.join(', ')}\n`;
+                const otherTopics = document.getElementById('otherTopics').value;
+                if (otherTopics) {
+                    output += `- Additional topics: ${otherTopics}\n`;
+                }
+                const sources = document.getElementById('sources').value;
+                if (sources) {
+                    output += `- Preferred sources: ${sources}\n`;
+                }
+            }
+            
+            if (contentType === 'slack' || contentType === 'both') {
+                const slackThemes = document.getElementById('slackThemes').value;
+                if (slackThemes) {
+                    output += `- Slack discussion themes to emphasize: ${slackThemes}\n`;
+                }
+            }
+            
+            output += `- Content depth: ${formData.get('depth') || 'Not specified'}\n`;
+            output += `- Content style: ${formData.get('style') || 'Not specified'}\n`;
+            output += `- Episode length: ${formData.get('length') || 'Not specified'}\n`;
+            output += `- Episode structure: ${formData.get('structure') || 'Not specified'}\n`;
+            output += `- Content timeframe: ${formData.get('timeframe') || 'Not specified'}\n\n`;
+            
+            output += `PERSPECTIVE:\n`;
+            output += `- Political lean: ${formData.get('politics') || 'Not specified'}\n`;
+            output += `- Tech/Innovation stance: ${formData.get('stance') || 'Not specified'}\n`;
+            output += `- Host expertise: ${formData.get('expertise') || 'Not specified'}\n\n`;
+            
+            const features = formData.getAll('features');
+            if (features.length > 0) {
+                output += `RECURRING FEATURES:\n`;
+                features.forEach(feature => {
+                    output += `- ${feature}\n`;
+                });
+                output += `\n`;
+            }
+            
+            const notes = document.getElementById('additionalNotes').value;
+            if (notes) {
+                output += `ADDITIONAL NOTES:\n`;
+                output += `${notes}\n\n`;
+            }
+            
+            // Add Slack content if present
+            if (contentType === 'slack' || contentType === 'both') {
+                output += `\n\nCLASS SLACK DISCUSSIONS\n`;
+                output += `========================\n\n`;
+                output += `The following are recent discussions from the class Slack workspace. The podcast hosts should analyze these conversations, identify key themes, debates, and questions, and discuss them in an engaging way that synthesizes the class's collective thinking.\n\n`;
+                output += `RAW SLACK MESSAGES:\n`;
+                output += `-------------------\n\n`;
+                output += slackContent;
+                output += `\n\n`;
+                output += `PODCAST HOSTS: Please identify the main themes in these discussions, highlight interesting debates or questions, and provide thoughtful commentary that helps classmates understand the key takeaways from these conversations.\n\n`;
+            }
+            
+            // Add news headlines if present
+            if (contentType === 'news' || contentType === 'both') {
+                output += `\n\nCURRENT NEWS STORIES TO COVER\n`;
+                output += `==============================\n\n`;
+                
+                // Add headlines for selected topics
+                let storyCount = 1;
+                topics.forEach(topic => {
+                    if (headlines[topic]) {
+                        output += `${topic.toUpperCase()}\n`;
+                        output += `${'-'.repeat(topic.length)}\n\n`;
+                        
+                        headlines[topic].forEach(story => {
+                            output += `STORY ${storyCount}: ${story.title}\n\n`;
+                            output += `${story.summary}\n\n`;
+                            output += `---\n\n`;
+                            storyCount++;
+                        });
+                    }
+                });
+            }
+            
+            output += `\n\nINSTRUCTIONS FOR AI HOSTS\n`;
+            output += `=========================\n\n`;
+            output += `Please generate a podcast episode based on the above parameters`;
+            
+            if (contentType === 'slack') {
+                output += ` and Slack discussions`;
+            } else if (contentType === 'news') {
+                output += ` and news stories`;
+            } else {
+                output += `, news stories, and Slack discussions`;
+            }
+            
+            output += `. The hosts should:\n\n`;
+            output += `1. Maintain the specified tone, energy level, and formality throughout\n`;
+            output += `2. Adopt the indicated dynamic between hosts (if multiple hosts)\n`;
+            
+            if (contentType === 'slack' || contentType === 'both') {
+                output += `3. Synthesize the Slack discussions into coherent themes and talking points\n`;
+                output += `4. Reference specific students or comments when relevant (but keep it respectful)\n`;
+                output += `5. Connect class discussions to broader course themes\n`;
+            }
+            
+            if (contentType === 'news' || contentType === 'both') {
+                output += `${contentType === 'both' ? '6' : '3'}. Cover the news stories with the specified depth and style\n`;
+                output += `${contentType === 'both' ? '7' : '4'}. ${contentType === 'both' ? 'Connect news stories to class discussions where relevant\n' : 'Present news in an engaging, conversational way\n'}`;
+            }
+            
+            output += `${contentType === 'both' ? '8' : contentType === 'slack' ? '6' : '5'}. Structure the episode according to the episode structure preference\n`;
+            output += `${contentType === 'both' ? '9' : contentType === 'slack' ? '7' : '6'}. Keep the episode approximately the specified length\n`;
+            output += `${contentType === 'both' ? '10' : contentType === 'slack' ? '8' : '7'}. Reflect the political lean and tech stance in how topics are discussed\n`;
+            output += `${contentType === 'both' ? '11' : contentType === 'slack' ? '9' : '8'}. Demonstrate the specified level of expertise\n`;
+            output += `${contentType === 'both' ? '12' : contentType === 'slack' ? '10' : '9'}. Include any recurring features if specified\n\n`;
+            output += `The podcast should feel natural, engaging, and true to the parameters outlined above.\n`;
+            
+            document.getElementById('resultsContent').textContent = output;
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        function copyResults() {
+            const resultsText = document.getElementById('resultsContent').textContent;
+            navigator.clipboard.writeText(resultsText).then(function() {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            });
+        }
+        
+        function downloadResults() {
+            const resultsText = document.getElementById('resultsContent').textContent;
+            const blob = new Blob([resultsText], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'podcast-briefing-document.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
